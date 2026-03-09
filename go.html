@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avant de Répondre — Ouverture en cours...</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #EFF6FF;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box;
+    }
+    .card {
+      background: white; border-radius: 20px; padding: 40px 32px;
+      text-align: center; max-width: 360px; width: 100%;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .icon { font-size: 56px; margin-bottom: 16px; }
+    h1 { font-size: 22px; color: #1E293B; margin: 0 0 10px; }
+    p { font-size: 15px; color: #6B7280; line-height: 1.6; margin: 0 0 24px; }
+    .btn {
+      display: inline-block; background: #2563EB; color: white;
+      border-radius: 12px; padding: 14px 28px; font-size: 16px;
+      font-weight: 600; text-decoration: none; margin-bottom: 12px;
+    }
+    .store-link {
+      display: block; font-size: 13px; color: #9CA3AF; margin-top: 8px;
+    }
+    .store-link a { color: #2563EB; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">🛡️</div>
+  <h1>Avant de Répondre</h1>
+  <p>Ouverture de l'application en cours...<br>Si rien ne se passe, appuyez sur le bouton ci-dessous.</p>
+  <a class="btn" id="open-app">Ouvrir l'application</a>
+  <div class="store-link">
+    Pas encore installée ?
+    <a href="https://play.google.com/store/apps/details?id=com.avantderepondre.app">
+      Télécharger sur Google Play
+    </a>
+  </div>
+</div>
+
+<script>
+  // Récupérer le code parrain depuis l'URL
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref') || '';
+
+  // Construire le deep link
+  const deepLink = ref
+    ? `avantderepondre://register?ref=${encodeURIComponent(ref)}`
+    : `avantderepondre://register`;
+
+  // Mettre à jour le bouton
+  document.getElementById('open-app').href = deepLink;
+
+  // Tentative d'ouverture automatique après 500ms
+  setTimeout(() => {
+    window.location.href = deepLink;
+  }, 500);
+</script>
+</body>
+</html>
