@@ -610,14 +610,34 @@
     <button class="btn-primary" onclick="login()">Accéder à mon espace →</button>
     <div class="error-msg" id="error-msg">Code ou mot de passe incorrect.</div>
 
-    <a class="admin-link" onclick="showAdminScreen()">⚙️ Espace administration</a>
+    <a class="admin-link" onclick="showAdminLogin()">⚙️ Espace administration</a>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div id="admin-login-screen" style="display:none; min-height:100vh; align-items:center; justify-content:center; background:var(--navy); position:relative; overflow:hidden;">
+  <div class="login-card">
+    <div class="back-link" onclick="showLoginScreen()" style="margin-bottom:24px;">← Retour</div>
+    <div class="login-logo">
+      <div class="shield">⚙️</div>
+      <h1>Administration<span>Accès restreint</span></h1>
+    </div>
+    <h2 style="color:white; font-family:'DM Serif Display',serif; font-size:24px; margin-bottom:8px;">Code d'accès</h2>
+    <p style="color:rgba(255,255,255,0.4); font-size:14px; margin-bottom:28px;">Entrez le code PIN pour accéder à l'administration</p>
+    <div class="field">
+      <label>Code PIN</label>
+      <input type="password" id="admin-pin" placeholder="••••" maxlength="10"
+        onkeydown="if(event.key==='Enter') checkAdminPin()">
+    </div>
+    <button class="btn-primary" onclick="checkAdminPin()">Accéder →</button>
+    <div class="error-msg" id="admin-pin-error">Code PIN incorrect.</div>
   </div>
 </div>
 
 <!-- ADMIN -->
 <div id="admin-screen">
   <div class="admin-card">
-    <div class="back-link" onclick="showLoginScreen()">← Retour</div>
+    <div class="back-link" onclick="document.getElementById('admin-screen').style.display='none'; document.getElementById('login-screen').style.display='flex';">← Retour</div>
 
     <div class="login-logo">
       <div class="shield">⚙️</div>
@@ -843,13 +863,35 @@
     currentPassword = '';
   }
 
-  function showAdminScreen() {
+  const ADMIN_PIN = 'JACKADR';  // ← changez ce PIN
+
+  function showAdminLogin() {
     document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-login-screen').style.display = 'flex';
+    setTimeout(() => document.getElementById('admin-pin').focus(), 100);
+  }
+
+  function checkAdminPin() {
+    const pin = document.getElementById('admin-pin').value.trim();
+    const errorEl = document.getElementById('admin-pin-error');
+    if (pin === ADMIN_PIN) {
+      document.getElementById('admin-login-screen').style.display = 'none';
+      document.getElementById('admin-screen').style.display = 'flex';
+      document.getElementById('admin-pin').value = '';
+      errorEl.style.display = 'none';
+    } else {
+      errorEl.style.display = 'block';
+    }
+  }
+
+  function showAdminScreen() {
+    // Appelé après validation du PIN
     document.getElementById('admin-screen').style.display = 'flex';
   }
 
   function showLoginScreen() {
     document.getElementById('admin-screen').style.display = 'none';
+    document.getElementById('admin-login-screen').style.display = 'none';
     document.getElementById('login-screen').style.display = 'flex';
   }
 
