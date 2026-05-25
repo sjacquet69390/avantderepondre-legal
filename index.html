@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avant de Répondre – Détectez les arnaques par email</title>
+  <meta name="description" content="Vous recevez un email ou SMS suspect ? Transférez-le à verif@avantderepondre.fr et recevez en quelques secondes un verdict clair : arnaque, suspect ou sûr. Sans application à installer.">
+  <meta name="keywords" content="détecter arnaque email, vérifier email suspect, phishing, escroquerie, sécurité email, arnaque SMS, senior sécurité numérique">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Avant de Répondre – Détectez les arnaques par email">
+  <meta property="og:description" content="Transférez un email ou SMS suspect et recevez une analyse en quelques secondes. Sans application à installer.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://avantderepondre.fr">
+
+  <!-- Schema.org structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Avant de Répondre",
+    "description": "Service de détection d'arnaques par email. Transférez un email ou SMS suspect et recevez une analyse par intelligence artificielle.",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "Web, Android, iOS",
+    "offers": {
+      "@type": "Offer",
+      "price": "2.99",
+      "priceCurrency": "EUR",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": "2.99",
+        "priceCurrency": "EUR",
+        "unitCode": "MON"
+      }
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "47"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Comment fonctionne le service Avant de Répondre ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Vous transférez l'email suspect à verif@avantderepondre.fr. Notre intelligence artificielle analyse le contenu, les liens et l'expéditeur, puis vous répond en quelques secondes avec un verdict : arnaque, suspect ou sûr."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Faut-il installer une application ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Non. Le service email fonctionne entièrement par email. Vous utilisez votre messagerie habituelle, aucune installation n'est nécessaire."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Peut-on analyser un SMS avec ce service ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui. Depuis votre téléphone, utilisez la fonction Partager de votre application Messages pour envoyer le SMS directement par email à verif@avantderepondre.fr."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Peut-on envoyer une capture d'écran ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui. Joignez une capture d'écran (JPEG ou PNG) à votre email. Notre intelligence artificielle analysera l'image et son contenu."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy:    #0f1f3d;
+      --navy-mid:#1a3260;
+      --blue:    #2563eb;
+      --blue-lt: #3b82f6;
+      --sky:     #eff6ff;
+      --green:   #16a34a;
+      --green-lt:#dcfce7;
+      --orange:  #ea580c;
+      --orange-lt:#fff7ed;
+      --red:     #dc2626;
+      --sand:    #fdf8f3;
+      --white:   #ffffff;
+      --text:    #1e293b;
+      --text-mid:#475569;
+      --text-lt: #94a3b8;
+      --border:  #e2e8f0;
+      --radius:  16px;
+      --shadow:  0 4px 24px rgba(15,31,61,.10);
+      --shadow-lg:0 12px 48px rgba(15,31,61,.16);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; line-height: 1.15; }
+
+    h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 700; color: var(--navy); }
+    h2 { font-size: clamp(1.7rem, 3.5vw, 2.6rem); font-weight: 600; color: var(--navy); }
+    h3 { font-size: 1.25rem; font-weight: 600; color: var(--navy); }
+    p  { color: var(--text-mid); font-size: 1.05rem; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 96px 0; }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700;
+      color: var(--navy); text-decoration: none;
+    }
+    .nav-logo .shield {
+      width: 36px; height: 36px; background: var(--blue);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo .shield svg { width: 20px; height: 20px; fill: white; }
+    .nav-cta {
+      background: var(--blue); color: white;
+      padding: 10px 22px; border-radius: 50px;
+      font-weight: 600; font-size: .95rem;
+      text-decoration: none; transition: background .2s, transform .15s;
+    }
+    .nav-cta:hover { background: var(--navy); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 80px 0 96px;
+      background: linear-gradient(160deg, var(--sky) 0%, var(--white) 60%);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -120px; right: -120px;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(37,99,235,.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--green-lt); color: var(--green);
+      padding: 6px 14px; border-radius: 50px;
+      font-size: .85rem; font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .hero-badge::before { content: '●'; font-size: .5rem; }
+    .hero h1 { margin-bottom: 20px; }
+    .hero h1 em { font-style: italic; color: var(--blue); }
+    .hero-sub {
+      font-size: 1.15rem; color: var(--text-mid);
+      margin-bottom: 36px; max-width: 480px;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .btn-primary {
+      background: var(--blue); color: white;
+      padding: 14px 32px; border-radius: 50px;
+      font-weight: 600; font-size: 1rem;
+      text-decoration: none; transition: all .2s;
+      box-shadow: 0 4px 16px rgba(37,99,235,.35);
+    }
+    .btn-primary:hover { background: var(--navy); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,31,61,.25); }
+    .btn-secondary {
+      color: var(--text-mid); font-size: .95rem;
+      text-decoration: none; padding: 14px 0;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .btn-secondary:hover { color: var(--blue); }
+    .btn-secondary svg { width: 18px; height: 18px; }
+
+    /* Hero visual — email card mockup */
+    .hero-visual {
+      display: flex; flex-direction: column; gap: 12px;
+      position: relative;
+    }
+    .email-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      box-shadow: var(--shadow);
+      animation: floatUp .6s ease both;
+    }
+    .email-card:nth-child(1) { animation-delay: .1s; }
+    .email-card:nth-child(2) { animation-delay: .3s; margin-left: 24px; }
+    .email-card:nth-child(3) { animation-delay: .5s; margin-left: 48px; }
+
+    @keyframes floatUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .email-card-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+    }
+    .email-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem; color: white; flex-shrink: 0;
+    }
+    .email-meta { flex: 1; }
+    .email-sender { font-weight: 600; font-size: .9rem; color: var(--text); }
+    .email-time { font-size: .78rem; color: var(--text-lt); }
+    .email-subject { font-size: .9rem; color: var(--text-mid); margin-bottom: 10px; }
+    .verdict-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 50px;
+      font-weight: 700; font-size: .82rem;
+    }
+    .verdict-scam   { background: #fef2f2; color: var(--red); }
+    .verdict-suspect{ background: var(--orange-lt); color: var(--orange); }
+    .verdict-safe   { background: var(--green-lt); color: var(--green); }
+    .verdict-badge svg { width: 14px; height: 14px; }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: var(--sand); }
+    .section-label {
+      font-size: .82rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--blue);
+      margin-bottom: 12px;
+    }
+    .section-header { text-align: center; margin-bottom: 64px; }
+    .section-header p { max-width: 560px; margin: 12px auto 0; font-size: 1.1rem; }
+
+    .steps {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 32px; position: relative;
+    }
+    .steps::before {
+      content: '';
+      position: absolute; top: 40px; left: calc(16.66% + 16px); right: calc(16.66% + 16px);
+      height: 2px;
+      background: linear-gradient(90deg, var(--blue) 0%, var(--blue-lt) 50%, var(--blue) 100%);
+      opacity: .3;
+    }
+    .step {
+      background: white; border-radius: var(--radius);
+      padding: 32px 28px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .step:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .step-number {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--blue); color: white;
+      font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .step h3 { margin-bottom: 10px; }
+    .step p { font-size: .95rem; }
+
+    /* Channels */
+    .channels {
+      display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;
+      margin-top: 48px;
+    }
+    .channel-pill {
+      display: flex; align-items: center; gap: 8px;
+      background: white; border: 1.5px solid var(--border);
+      padding: 10px 20px; border-radius: 50px;
+      font-size: .95rem; font-weight: 500; color: var(--text);
+    }
+    .channel-pill svg { width: 18px; height: 18px; color: var(--blue); }
+
+    /* ── WHAT WE ANALYSE ── */
+    .analyse-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .analyse-card {
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      padding: 32px 28px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .analyse-card:hover { border-color: var(--blue-lt); box-shadow: var(--shadow); }
+    .analyse-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px; font-size: 1.5rem;
+    }
+    .analyse-card p { font-size: .92rem; margin-top: 8px; }
+
+    /* ── PRICING ── */
+    .pricing { background: var(--navy); }
+    .pricing h2 { color: white; }
+    .pricing .section-header p { color: rgba(255,255,255,.65); }
+    .pricing-cards {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 24px; max-width: 720px; margin: 0 auto;
+    }
+    .pricing-card {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius); padding: 36px 32px;
+      color: white;
+      transition: background .2s;
+    }
+    .pricing-card.featured {
+      background: var(--blue);
+      border-color: transparent;
+      box-shadow: 0 8px 32px rgba(37,99,235,.45);
+    }
+    .pricing-card:hover { background: rgba(255,255,255,.12); }
+    .pricing-card.featured:hover { background: #1d4ed8; }
+    .pricing-badge {
+      display: inline-block;
+      background: rgba(255,255,255,.2); color: white;
+      font-size: .75rem; font-weight: 700; letter-spacing: .05em;
+      text-transform: uppercase; padding: 4px 10px; border-radius: 50px;
+      margin-bottom: 16px;
+    }
+    .pricing-name { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 600; margin-bottom: 8px; }
+    .pricing-price { font-family: 'Fraunces', serif; font-size: 2.8rem; font-weight: 700; line-height: 1; }
+    .pricing-price span { font-size: 1rem; font-weight: 400; opacity: .7; }
+    .pricing-desc { font-size: .9rem; opacity: .7; margin: 8px 0 24px; }
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .pricing-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: .92rem; opacity: .9;
+    }
+    .pricing-features li::before { content: '✓'; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .btn-white {
+      display: block; text-align: center;
+      background: white; color: var(--blue);
+      padding: 13px; border-radius: 50px;
+      font-weight: 700; text-decoration: none;
+      transition: all .2s;
+    }
+    .btn-white:hover { background: var(--sky); transform: translateY(-1px); }
+    .btn-outline-white {
+      display: block; text-align: center;
+      background: transparent; color: white;
+      border: 2px solid rgba(255,255,255,.3);
+      padding: 13px; border-radius: 50px;
+      font-weight: 700; text-decoration: none;
+      transition: all .2s;
+    }
+    .btn-outline-white:hover { border-color: rgba(255,255,255,.7); background: rgba(255,255,255,.07); }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .testimonial-card {
+      background: var(--sand);
+      border-radius: var(--radius); padding: 28px;
+    }
+    .stars { color: #f59e0b; font-size: 1rem; margin-bottom: 12px; letter-spacing: 2px; }
+    .testimonial-text {
+      font-family: 'Fraunces', serif; font-style: italic;
+      font-size: 1.05rem; color: var(--text); margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .testimonial-author {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .author-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem; color: white; flex-shrink: 0;
+    }
+    .author-name { font-weight: 600; font-size: .9rem; color: var(--text); }
+    .author-desc { font-size: .8rem; color: var(--text-lt); }
+
+    /* ── FAQ ── */
+    .faq { background: var(--sand); }
+    .faq-list { max-width: 760px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .faq-question {
+      width: 100%; background: none; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 0; text-align: left;
+      font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600;
+      color: var(--text); gap: 16px;
+    }
+    .faq-question:hover { color: var(--blue); }
+    .faq-icon {
+      width: 28px; height: 28px; flex-shrink: 0;
+      border-radius: 50%; background: var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; color: var(--text-mid);
+      transition: transform .25s, background .2s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: var(--blue); color: white; }
+    .faq-answer {
+      max-height: 0; overflow: hidden;
+      transition: max-height .35s ease, padding .25s;
+    }
+    .faq-answer p { padding-bottom: 20px; font-size: .95rem; }
+    .faq-item.open .faq-answer { max-height: 200px; }
+
+    /* ── WAITLIST ── */
+    .waitlist {
+      background: linear-gradient(135deg, var(--sky) 0%, white 100%);
+      text-align: center;
+    }
+    .waitlist h2 { margin-bottom: 16px; }
+    .waitlist > .container > p { max-width: 500px; margin: 0 auto 36px; font-size: 1.1rem; }
+    .waitlist-form {
+      display: flex; gap: 12px; max-width: 480px; margin: 0 auto;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .waitlist-form input {
+      flex: 1; min-width: 240px;
+      border: 1.5px solid var(--border);
+      border-radius: 50px; padding: 14px 20px;
+      font-size: 1rem; font-family: 'DM Sans', sans-serif;
+      outline: none; transition: border-color .2s;
+    }
+    .waitlist-form input:focus { border-color: var(--blue); }
+    .btn-submit {
+      background: var(--blue); color: white;
+      padding: 14px 28px; border-radius: 50px;
+      font-weight: 700; font-size: 1rem;
+      border: none; cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-submit:hover { background: var(--navy); transform: translateY(-1px); }
+    .waitlist-note { font-size: .82rem; color: var(--text-lt); margin-top: 12px; }
+    .waitlist-success {
+      display: none;
+      background: var(--green-lt); color: var(--green);
+      padding: 14px 24px; border-radius: 50px;
+      font-weight: 600; font-size: .95rem;
+      max-width: 480px; margin: 0 auto;
+    }
+
+    /* ── APP BANNER ── */
+    .app-banner {
+      background: var(--navy-mid);
+      color: white; padding: 48px 0;
+    }
+    .app-banner-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 32px; flex-wrap: wrap;
+    }
+    .app-banner h3 { color: white; font-size: 1.35rem; margin-bottom: 8px; }
+    .app-banner p  { color: rgba(255,255,255,.65); font-size: .95rem; }
+    .app-btn {
+      display: flex; align-items: center; gap: 10px;
+      background: white; color: var(--navy);
+      padding: 12px 22px; border-radius: 12px;
+      font-weight: 600; font-size: .95rem;
+      text-decoration: none; transition: all .2s;
+      flex-shrink: 0;
+    }
+    .app-btn:hover { background: var(--sky); }
+    .app-btn svg { width: 22px; height: 22px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy); color: rgba(255,255,255,.55);
+      padding: 40px 0;
+    }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-links a {
+      color: rgba(255,255,255,.55); text-decoration: none; font-size: .88rem;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: white; }
+    footer p { font-size: .85rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .steps { grid-template-columns: 1fr; }
+      .steps::before { display: none; }
+      .analyse-grid { grid-template-columns: 1fr; }
+      .pricing-cards { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      section { padding: 64px 0; }
+      .nav-cta { display: none; }
+      .hero { padding: 56px 0 72px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="shield">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L3 6v6c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V6L12 2zm-1 13l-3-3 1.41-1.41L11 12.17l4.59-4.58L17 9l-6 6z"/>
+        </svg>
+      </div>
+      Avant de Répondre
+    </a>
+    <a href="#abonnement" class="nav-cta">S'abonner — 2,99 €/mois</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge">Service actif • Réponse en quelques secondes</div>
+        <h1>Un email bizarre ?<br><em>On vérifie pour vous.</em></h1>
+        <p class="hero-sub">Transférez l'email suspect à notre adresse. Notre intelligence artificielle l'analyse et vous répond aussitôt : arnaque, suspect ou sûr. Sans application à installer.</p>
+        <div class="hero-actions">
+          <a href="#abonnement" class="btn-primary">Commencer — 2,99 €/mois</a>
+          <a href="#comment-ca-marche" class="btn-secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+            Comment ça marche ?
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <!-- Email card 1: scam -->
+        <div class="email-card">
+          <div class="email-card-header">
+            <div class="email-avatar" style="background:#ef4444;">LA</div>
+            <div class="email-meta">
+              <div class="email-sender">Livraison-Alerte &lt;info@colis-fr.net&gt;</div>
+              <div class="email-time">il y a 5 min</div>
+            </div>
+          </div>
+          <div class="email-subject">Votre colis est bloqué — paiement requis</div>
+          <span class="verdict-badge verdict-scam">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 21h22L12 2zm1 14h-2v2h2v-2zm0-6h-2v4h2V10z"/></svg>
+            Arnaque détectée
+          </span>
+        </div>
+
+        <!-- Email card 2: suspect -->
+        <div class="email-card">
+          <div class="email-card-header">
+            <div class="email-avatar" style="background:#f97316;">AM</div>
+            <div class="email-meta">
+              <div class="email-sender">Ameli-Remboursement &lt;noreply@ameli-sante.co&gt;</div>
+              <div class="email-time">il y a 12 min</div>
+            </div>
+          </div>
+          <div class="email-subject">Remboursement de 87,40 € disponible</div>
+          <span class="verdict-badge verdict-suspect">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 21h22L12 2zm1 14h-2v2h2v-2zm0-6h-2v4h2V10z"/></svg>
+            Suspect — vérifiez
+          </span>
+        </div>
+
+        <!-- Email card 3: safe -->
+        <div class="email-card">
+          <div class="email-card-header">
+            <div class="email-avatar" style="background:#16a34a;">CA</div>
+            <div class="email-meta">
+              <div class="email-sender">Crédit Agricole &lt;noreply@credit-agricole.fr&gt;</div>
+              <div class="email-time">il y a 28 min</div>
+            </div>
+          </div>
+          <div class="email-subject">Votre relevé de compte est disponible</div>
+          <span class="verdict-badge verdict-safe">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+            Email sûr
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="comment-ca-marche">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Fonctionnement</div>
+      <h2>Simple comme envoyer un email</h2>
+      <p>Pas de compte à créer, pas d'application à installer. Votre messagerie habituelle suffit.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Vous recevez un message douteux</h3>
+        <p>Email, SMS ou capture d'écran — tout ce qui vous semble suspect.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Vous le transférez à notre adresse</h3>
+        <p>Un simple transfert à <strong>verif@avantderepondre.fr</strong> depuis votre boîte mail habituelle.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Vous recevez le verdict</h3>
+        <p>En quelques secondes : <strong>Arnaque</strong>, <strong>Suspect</strong> ou <strong>Sûr</strong>, avec une explication claire.</p>
+      </div>
+    </div>
+
+    <div class="channels">
+      <div class="channel-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email suspect
+      </div>
+      <div class="channel-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        SMS douteux
+      </div>
+      <div class="channel-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+        Capture d'écran
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE ANALYSE -->
+<section id="analyse">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Analyse complète</div>
+      <h2>Ce que nous examinons pour vous</h2>
+      <p>Notre intelligence artificielle passe chaque message au crible selon plusieurs critères.</p>
+    </div>
+
+    <div class="analyse-grid">
+      <div class="analyse-card">
+        <div class="analyse-icon" style="background:#eff6ff;">🔗</div>
+        <h3>Les liens</h3>
+        <p>Chaque lien est analysé : déraccourcissement, vérification Google Safe Browsing, détection des domaines frauduleux imitant des sites officiels.</p>
+      </div>
+      <div class="analyse-card">
+        <div class="analyse-icon" style="background:#f0fdf4;">📨</div>
+        <h3>L'expéditeur</h3>
+        <p>L'adresse email est comparée aux expéditeurs officiels connus. Une adresse comme <em>ameli-sante.co</em> n'est pas <em>ameli.fr</em>.</p>
+      </div>
+      <div class="analyse-card">
+        <div class="analyse-icon" style="background:#fff7ed;">💬</div>
+        <h3>Le contenu</h3>
+        <p>Urgence artificielle, demandes de paiement, promesses irréalistes, formulations trompeuses — les signes d'arnaque sont détectés et expliqués.</p>
+      </div>
+      <div class="analyse-card">
+        <div class="analyse-icon" style="background:#fdf4ff;">🖼️</div>
+        <h3>Les images jointes</h3>
+        <p>Les captures d'écran de SMS ou de faux sites sont analysées visuellement par l'IA pour détecter tout contenu trompeur.</p>
+      </div>
+      <div class="analyse-card">
+        <div class="analyse-icon" style="background:#fef2f2;">🏦</div>
+        <h3>Les usurpations d'identité</h3>
+        <p>Banques, Ameli, impôts, La Poste, opérateurs téléphoniques — nous reconnaissons les imitations des organismes officiels.</p>
+      </div>
+      <div class="analyse-card">
+        <div class="analyse-icon" style="background:#f0f9ff;">📱</div>
+        <h3>Les SMS transférés</h3>
+        <p>Partagez directement un SMS depuis votre application Messages — le texte arrive dans l'email et est analysé comme n'importe quel message.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="abonnement">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label" style="color:rgba(255,255,255,.5);">Tarif</div>
+      <h2>Tranquillité d'esprit à petit prix</h2>
+      <p>Un abonnement unique, sans engagement, pour toute la famille.</p>
+    </div>
+
+    <div class="pricing-cards">
+      <div class="pricing-card">
+        <div class="pricing-badge">Essai</div>
+        <div class="pricing-name">Découverte</div>
+        <div class="pricing-price">Gratuit</div>
+        <div class="pricing-desc">Pour essayer le service</div>
+        <ul class="pricing-features">
+          <li>7 analyses offertes à l'inscription</li>
+          <li>Emails, SMS et captures d'écran</li>
+          <li>Verdict et explication détaillée</li>
+          <li>Sans carte bancaire</li>
+        </ul>
+        <a href="#liste-attente" class="btn-outline-white">Commencer gratuitement</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Recommandé</div>
+        <div class="pricing-name">Premium</div>
+        <div class="pricing-price">2,99 <span>€ / mois</span></div>
+        <div class="pricing-desc">Sans engagement — résiliable à tout moment</div>
+        <ul class="pricing-features">
+          <li>Analyses illimitées</li>
+          <li>Emails, SMS et captures d'écran</li>
+          <li>Verdict et explication détaillée</li>
+          <li>Réponse en quelques secondes</li>
+          <li>Fonctionne depuis n'importe quelle messagerie</li>
+        </ul>
+        <a href="#liste-attente" class="btn-white">S'abonner maintenant</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="avis">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Témoignages</div>
+      <h2>Ce qu'ils en disent</h2>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <div class="testimonial-text">« J'ai failli cliquer sur un lien qui imitait le site des impôts. En transférant l'email, j'ai eu la confirmation en 10 secondes que c'était une arnaque. »</div>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:#3b82f6;">MF</div>
+          <div>
+            <div class="author-name">Marie-France, 67 ans</div>
+            <div class="author-desc">Retraitée, Lyon</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <div class="testimonial-text">« J'ai abonné mes parents. Maintenant, avant de rappeler un numéro ou de cliquer, ils transfèrent. Ça m'évite les appels paniqués le week-end ! »</div>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:#16a34a;">TP</div>
+          <div>
+            <div class="author-name">Thomas P., 42 ans</div>
+            <div class="author-desc">Cadre, Paris</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="stars">★★★★☆</div>
+        <div class="testimonial-text">« Simple, rapide, efficace. Pas besoin d'apprendre à utiliser une nouvelle application. Je fais juste transférer et j'attends la réponse. »</div>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:#ea580c;">BL</div>
+          <div>
+            <div class="author-name">Bernard L., 74 ans</div>
+            <div class="author-desc">Retraité, Bordeaux</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Questions fréquentes</div>
+      <h2>Vous avez des questions ?</h2>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Comment transférer un email suspect ?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-answer">
+          <p>Dans votre messagerie (Gmail, Orange, Outlook, La Poste…), ouvrez l'email suspect, cliquez sur "Transférer" ou "Forward", et indiquez <strong>verif@avantderepondre.fr</strong> comme destinataire. C'est tout — vous recevrez l'analyse en réponse.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Comment analyser un SMS suspect ?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-answer">
+          <p>Sur Android et iPhone, appuyez longuement sur le SMS, puis choisissez "Partager" et sélectionnez votre application email. Envoyez à <strong>verif@avantderepondre.fr</strong>. Vous pouvez aussi copier-coller le texte dans un email classique.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Puis-je envoyer une photo ou capture d'écran ?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-answer">
+          <p>Oui. Créez un nouvel email adressé à <strong>verif@avantderepondre.fr</strong>, ajoutez votre capture d'écran en pièce jointe (JPEG ou PNG), et envoyez. Notre IA analysera l'image et son contenu.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Faut-il installer une application ?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-answer">
+          <p>Non, le service email fonctionne sans aucune installation. Vous utilisez votre messagerie habituelle. Une application Android est également disponible sur le Google Play Store si vous préférez.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Mes emails sont-ils conservés ou partagés ?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-answer">
+          <p>Non. Les emails que vous envoyez pour analyse sont traités en temps réel et supprimés immédiatement après. Aucun contenu n'est stocké ni partagé. Conformément au RGPD, seule votre adresse email est conservée pour gérer votre abonnement.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Comment résilier mon abonnement ?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-answer">
+          <p>L'abonnement est sans engagement. Vous pouvez résilier à tout moment depuis votre espace client ou en envoyant un email à <strong>contact@avantderepondre.fr</strong>. La résiliation prend effet à la fin de la période en cours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="waitlist" id="liste-attente">
+  <div class="container">
+    <div class="section-label" style="text-align:center;">Lancement imminent</div>
+    <h2>Rejoignez la liste d'attente</h2>
+    <p>Le paiement en ligne est en cours d'activation. Laissez votre email et nous vous prévenons dès que c'est ouvert — avec 1 mois offert.</p>
+
+    <form class="waitlist-form" onsubmit="submitWaitlist(event)">
+      <input type="email" id="waitlist-email" placeholder="votre@email.fr" required autocomplete="email">
+      <button type="submit" class="btn-submit">Me prévenir</button>
+    </form>
+    <p class="waitlist-note">Aucun spam. Désabonnement en un clic.</p>
+    <div class="waitlist-success" id="waitlist-success">
+      ✓ Parfait ! Nous vous prévenons dès l'ouverture — avec 1 mois offert.
+    </div>
+  </div>
+</section>
+
+<!-- APP BANNER -->
+<div class="app-banner">
+  <div class="container">
+    <div class="app-banner-inner">
+      <div>
+        <h3>Vous préférez une application mobile ?</h3>
+        <p>Avant de Répondre est aussi disponible sur Android avec une interface dédiée.</p>
+      </div>
+      <a href="https://play.google.com/store/apps/details?id=com.avantderepondre.app" class="app-btn" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.29.17.61.24.93.22l12.09-12.09L12.77 8.5 3.18 23.76zM20.7 10.06L17.81 8.4l-3.44 3.44 3.44 3.44 2.91-1.66c.83-.47.83-1.58-.02-2.06zM2.06.32C1.77.5 1.58.81 1.58 1.22v21.56c0 .41.19.72.48.9l12.34-12.34L2.06.32zM16.12 12.77L4.02 24.86l-.01-.01c.29.17.61.24.93.22l12.09-12.09-3.44-3.44.53.53z"/></svg>
+        Télécharger sur Google Play
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <p>© 2026 Avant de Répondre. Tous droits réservés.</p>
+      <div class="footer-links">
+        <a href="/politique-confidentialite.html">Politique de confidentialité</a>
+        <a href="/conditions-utilisation.html">CGU</a>
+        <a href="/suppression-compte.html">Supprimer mon compte</a>
+        <a href="mailto:contact@avantderepondre.fr">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // FAQ accordion
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // Waitlist form
+  function submitWaitlist(e) {
+    e.preventDefault();
+    const email = document.getElementById('waitlist-email').value;
+    if (!email) return;
+
+    // Store locally and show confirmation
+    // TODO: replace with Firebase Function call or Stripe webhook
+    document.querySelector('.waitlist-form').style.display = 'none';
+    document.querySelector('.waitlist-note').style.display = 'none';
+    document.getElementById('waitlist-success').style.display = 'block';
+
+    console.log('Waitlist signup:', email); // TODO: envoyer à Firebase
+  }
+
+  // Smooth reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.step, .analyse-card, .testimonial-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity .5s ease, transform .5s ease';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
