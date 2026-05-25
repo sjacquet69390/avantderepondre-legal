@@ -437,42 +437,6 @@
     .faq-answer p { padding-bottom: 20px; font-size: .95rem; }
     .faq-item.open .faq-answer { max-height: 200px; }
 
-    /* ── WAITLIST ── */
-    .waitlist {
-      background: linear-gradient(135deg, var(--sky) 0%, white 100%);
-      text-align: center;
-    }
-    .waitlist h2 { margin-bottom: 16px; }
-    .waitlist > .container > p { max-width: 500px; margin: 0 auto 36px; font-size: 1.1rem; }
-    .waitlist-form {
-      display: flex; gap: 12px; max-width: 480px; margin: 0 auto;
-      flex-wrap: wrap; justify-content: center;
-    }
-    .waitlist-form input {
-      flex: 1; min-width: 240px;
-      border: 1.5px solid var(--border);
-      border-radius: 50px; padding: 14px 20px;
-      font-size: 1rem; font-family: 'DM Sans', sans-serif;
-      outline: none; transition: border-color .2s;
-    }
-    .waitlist-form input:focus { border-color: var(--blue); }
-    .btn-submit {
-      background: var(--blue); color: white;
-      padding: 14px 28px; border-radius: 50px;
-      font-weight: 700; font-size: 1rem;
-      border: none; cursor: pointer;
-      transition: all .2s;
-    }
-    .btn-submit:hover { background: var(--navy); transform: translateY(-1px); }
-    .waitlist-note { font-size: .82rem; color: var(--text-lt); margin-top: 12px; }
-    .waitlist-success {
-      display: none;
-      background: var(--green-lt); color: var(--green);
-      padding: 14px 24px; border-radius: 50px;
-      font-weight: 600; font-size: .95rem;
-      max-width: 480px; margin: 0 auto;
-    }
-
     /* ── APP BANNER ── */
     .app-banner {
       background: var(--navy-mid);
@@ -542,7 +506,7 @@
       </div>
       Avant de Répondre
     </a>
-    <a href="#abonnement" class="nav-cta">S'abonner — 2,99 €/mois</a>
+    <a href="https://buy.stripe.com/test_28EcN49wR8F02KQ1ybcfK00" class="nav-cta" target="_blank" rel="noopener">S'abonner — 2,99 €/mois</a>
   </div>
 </nav>
 
@@ -555,7 +519,7 @@
         <h1>Un email bizarre ?<br><em>On vérifie pour vous.</em></h1>
         <p class="hero-sub">Transférez l'email suspect à notre adresse. Notre intelligence artificielle l'analyse et vous répond aussitôt : arnaque, suspect ou sûr. Sans application à installer.</p>
         <div class="hero-actions">
-          <a href="#abonnement" class="btn-primary">Commencer — 2,99 €/mois</a>
+          <a href="https://buy.stripe.com/test_28EcN49wR8F02KQ1ybcfK00" class="btn-primary" target="_blank" rel="noopener">Commencer — 2,99 €/mois</a>
           <a href="#comment-ca-marche" class="btn-secondary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
             Comment ça marche ?
@@ -723,9 +687,11 @@
           <li>7 analyses offertes à l'inscription</li>
           <li>Emails, SMS et captures d'écran</li>
           <li>Verdict et explication détaillée</li>
-          <li>Sans carte bancaire</li>
+          <li>Aucune carte bancaire requise</li>
         </ul>
-        <a href="#liste-attente" class="btn-outline-white">Commencer gratuitement</a>
+        <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:14px 16px;font-size:.88rem;line-height:1.5;color:rgba(255,255,255,.85);text-align:left;">
+          📧 Pour commencer, <strong style="color:white;">transférez simplement un email suspect</strong> à <strong style="color:white;">verif@avantderepondre.fr</strong> — votre compte est créé automatiquement.
+        </div>
       </div>
 
       <div class="pricing-card featured">
@@ -740,7 +706,7 @@
           <li>Réponse en quelques secondes</li>
           <li>Fonctionne depuis n'importe quelle messagerie</li>
         </ul>
-        <a href="#liste-attente" class="btn-white">S'abonner maintenant</a>
+        <a href="https://buy.stripe.com/test_28EcN49wR8F02KQ1ybcfK00" class="btn-white" target="_blank" rel="noopener">S'abonner maintenant</a>
       </div>
     </div>
   </div>
@@ -859,27 +825,9 @@
           <div class="faq-icon">+</div>
         </button>
         <div class="faq-answer">
-          <p>L'abonnement est sans engagement. Vous pouvez résilier à tout moment depuis votre espace client ou en envoyant un email à <strong>contact@avantderepondre.fr</strong>. La résiliation prend effet à la fin de la période en cours.</p>
+          <p>L'abonnement est sans engagement. Vous pouvez résilier à tout moment depuis votre <a href="https://billing.stripe.com/p/login/test_28EcN49wR8F02KQ1ybcfK00" target="_blank" rel="noopener" style="color:var(--blue);">portail d'abonnement</a> (accès direct, sans mot de passe) ou en envoyant un email à <strong>contact@avantderepondre.fr</strong>. La résiliation prend effet à la fin de la période en cours.</p>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- WAITLIST -->
-<section class="waitlist" id="liste-attente">
-  <div class="container">
-    <div class="section-label" style="text-align:center;">Lancement imminent</div>
-    <h2>Rejoignez la liste d'attente</h2>
-    <p>Le paiement en ligne est en cours d'activation. Laissez votre email et nous vous prévenons dès que c'est ouvert — avec 1 mois offert.</p>
-
-    <form class="waitlist-form" onsubmit="submitWaitlist(event)">
-      <input type="email" id="waitlist-email" placeholder="votre@email.fr" required autocomplete="email">
-      <button type="submit" class="btn-submit">Me prévenir</button>
-    </form>
-    <p class="waitlist-note">Aucun spam. Désabonnement en un clic.</p>
-    <div class="waitlist-success" id="waitlist-success">
-      ✓ Parfait ! Nous vous prévenons dès l'ouverture — avec 1 mois offert.
     </div>
   </div>
 </section>
@@ -922,21 +870,6 @@
     const isOpen = item.classList.contains('open');
     document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
     if (!isOpen) item.classList.add('open');
-  }
-
-  // Waitlist form
-  function submitWaitlist(e) {
-    e.preventDefault();
-    const email = document.getElementById('waitlist-email').value;
-    if (!email) return;
-
-    // Store locally and show confirmation
-    // TODO: replace with Firebase Function call or Stripe webhook
-    document.querySelector('.waitlist-form').style.display = 'none';
-    document.querySelector('.waitlist-note').style.display = 'none';
-    document.getElementById('waitlist-success').style.display = 'block';
-
-    console.log('Waitlist signup:', email); // TODO: envoyer à Firebase
   }
 
   // Smooth reveal on scroll

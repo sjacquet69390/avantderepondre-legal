@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenue — Avant de Répondre</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy:   #0f1f3d;
+      --blue:   #2563eb;
+      --sky:    #eff6ff;
+      --green:  #16a34a;
+      --green-lt:#dcfce7;
+      --sand:   #fdf8f3;
+      --white:  #ffffff;
+      --text:   #1e293b;
+      --text-mid:#475569;
+      --text-lt:#94a3b8;
+      --border: #e2e8f0;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: linear-gradient(160deg, var(--sky) 0%, var(--white) 60%);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    /* NAV */
+    nav {
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center;
+      height: 68px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 700;
+      color: var(--navy); text-decoration: none;
+    }
+    .shield {
+      width: 34px; height: 34px; background: var(--blue);
+      border-radius: 9px; display: flex; align-items: center; justify-content: center;
+    }
+    .shield svg { width: 19px; height: 19px; fill: white; }
+
+    /* MAIN */
+    main {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 48px 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 12px 48px rgba(15,31,61,.12);
+      padding: 56px 48px;
+      max-width: 620px; width: 100%;
+      text-align: center;
+      animation: fadeUp .5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .success-icon {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--green-lt);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px;
+      animation: popIn .4s cubic-bezier(.34,1.56,.64,1) .2s both;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .success-icon svg { width: 40px; height: 40px; color: var(--green); }
+
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem; font-weight: 700;
+      color: var(--navy); margin-bottom: 12px;
+      line-height: 1.2;
+    }
+    h1 em { font-style: italic; color: var(--green); }
+
+    .subtitle {
+      font-size: 1.05rem; color: var(--text-mid);
+      margin-bottom: 40px; line-height: 1.6;
+    }
+
+    /* Steps */
+    .steps {
+      background: var(--sand);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 32px;
+      text-align: left;
+    }
+    .steps-title {
+      font-weight: 700; font-size: .82rem;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--text-lt); margin-bottom: 20px;
+    }
+    .step {
+      display: flex; align-items: flex-start; gap: 14px;
+      margin-bottom: 18px;
+    }
+    .step:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--blue); color: white;
+      font-weight: 700; font-size: .85rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .step-text { font-size: .95rem; color: var(--text); line-height: 1.5; }
+    .step-text strong { color: var(--navy); }
+
+    /* Email highlight */
+    .email-highlight {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--sky); border: 1.5px solid #bfdbfe;
+      border-radius: 50px; padding: 10px 20px;
+      font-weight: 700; font-size: 1rem; color: var(--blue);
+      margin: 0 auto 32px; cursor: pointer;
+      transition: all .2s; text-decoration: none;
+      position: relative;
+    }
+    .email-highlight:hover { background: #dbeafe; }
+    .email-highlight svg { width: 18px; height: 18px; }
+    .copy-tooltip {
+      position: absolute; top: -36px; left: 50%; transform: translateX(-50%);
+      background: var(--navy); color: white;
+      font-size: .75rem; font-weight: 600; padding: 5px 10px;
+      border-radius: 6px; white-space: nowrap;
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .email-highlight.copied .copy-tooltip { opacity: 1; }
+
+    .btn-home {
+      display: inline-block;
+      color: var(--text-mid); font-size: .9rem;
+      text-decoration: none; padding: 8px 0;
+      transition: color .2s;
+    }
+    .btn-home:hover { color: var(--blue); }
+
+    /* Portail */
+    .portal-link {
+      margin-top: 24px; padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .portal-link p { font-size: .85rem; color: var(--text-lt); }
+    .portal-link a { color: var(--blue); text-decoration: none; font-weight: 500; }
+    .portal-link a:hover { text-decoration: underline; }
+
+    /* FOOTER */
+    footer {
+      background: var(--navy); color: rgba(255,255,255,.45);
+      padding: 24px; text-align: center; font-size: .82rem;
+    }
+    footer a { color: rgba(255,255,255,.45); text-decoration: none; margin: 0 10px; }
+    footer a:hover { color: white; }
+
+    @media (max-width: 600px) {
+      .card { padding: 36px 24px; }
+      h1 { font-size: 1.6rem; }
+      .steps { padding: 22px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="shield">
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 6v6c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V6L12 2zm-1 13l-3-3 1.41-1.41L11 12.17l4.59-4.58L17 9l-6 6z"/></svg>
+      </div>
+      Avant de Répondre
+    </a>
+  </div>
+</nav>
+
+<main>
+  <div class="card">
+
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+    </div>
+
+    <h1>Bienvenue !<br>Vous êtes <em>protégé.</em></h1>
+    <p class="subtitle">Votre abonnement est actif. Vous pouvez dès maintenant transférer vos emails et SMS suspects pour analyse.</p>
+
+    <div class="steps">
+      <div class="steps-title">Comment utiliser le service</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Vous recevez un email ou SMS qui vous semble <strong>douteux ou suspect</strong>.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Transférez-le à notre adresse d'analyse ou joignez une capture d'écran en pièce jointe.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Vous recevez le <strong>verdict en quelques secondes</strong> : Arnaque, Suspect ou Sûr — avec une explication claire.</div>
+      </div>
+    </div>
+
+    <p style="font-size:.9rem;color:var(--text-lt);margin-bottom:10px;">Votre adresse d'analyse :</p>
+    <a class="email-highlight" onclick="copyEmail(this)" href="mailto:verif@avantderepondre.fr">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      verif@avantderepondre.fr
+      <div class="copy-tooltip">Copié !</div>
+    </a>
+
+    <br>
+    <a href="/" class="btn-home">← Retour à l'accueil</a>
+
+    <div class="portal-link">
+      <p>Gérer votre abonnement (résiliation, moyen de paiement) : <a href="https://billing.stripe.com/p/login/test_28EcN49wR8F02KQ1ybcfK00" target="_blank" rel="noopener">portail d'abonnement</a></p>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <a href="/politique-confidentialite.html">Confidentialité</a>
+  <a href="/conditions-utilisation.html">CGU</a>
+  <a href="mailto:contact@avantderepondre.fr">Contact</a>
+  <span style="margin-left:10px;">© 2026 Avant de Répondre</span>
+</footer>
+
+<script>
+  function copyEmail(el) {
+    navigator.clipboard.writeText('verif@avantderepondre.fr').then(() => {
+      el.classList.add('copied');
+      setTimeout(() => el.classList.remove('copied'), 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
