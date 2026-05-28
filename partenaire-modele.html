@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Partenaire — Avant de Répondre</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:       #0a0e1a;
+      --surface:  #111827;
+      --border:   #1f2d45;
+      --accent:   #3b82f6;
+      --accent2:  #06b6d4;
+      --green:    #10b981;
+      --green-lt: #064e3b;
+      --orange:   #f59e0b;
+      --orange-lt:#451a03;
+      --red:      #ef4444;
+      --text:     #f1f5f9;
+      --text-mid: #94a3b8;
+      --text-lt:  #475569;
+      --mono:     'DM Mono', monospace;
+      --sans:     'Syne', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ── LOGIN ── */
+    #login-screen {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 420px; width: 100%;
+      text-align: center;
+    }
+    .login-logo {
+      width: 56px; height: 56px;
+      background: var(--accent);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 1.5rem;
+    }
+    .login-card h1 {
+      font-size: 1.5rem; font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .login-card p {
+      color: var(--text-mid); font-size: .9rem; margin-bottom: 32px;
+    }
+    .input-group { margin-bottom: 16px; text-align: left; }
+    .input-group label {
+      display: block; font-size: .8rem; font-weight: 600;
+      color: var(--text-mid); text-transform: uppercase;
+      letter-spacing: .08em; margin-bottom: 6px;
+    }
+    .input-group input {
+      width: 100%; background: var(--bg);
+      border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 12px 16px; color: var(--text);
+      font-family: var(--mono); font-size: .95rem;
+      outline: none; transition: border-color .2s;
+    }
+    .input-group input:focus { border-color: var(--accent); }
+    .btn-login {
+      width: 100%; background: var(--accent); color: white;
+      border: none; border-radius: 10px;
+      padding: 14px; font-family: var(--sans);
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: all .2s; margin-top: 8px;
+    }
+    .btn-login:hover { background: #2563eb; transform: translateY(-1px); }
+    .login-error {
+      color: var(--red); font-size: .85rem;
+      margin-top: 12px; display: none;
+    }
+
+    /* ── DASHBOARD ── */
+    #dashboard { display: none; }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+    }
+    .header-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .header-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 1rem; font-weight: 800; color: var(--text);
+    }
+    .header-logo span { color: var(--accent); }
+    .header-info {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .partner-badge {
+      background: rgba(59,130,246,.15);
+      border: 1px solid rgba(59,130,246,.3);
+      color: var(--accent);
+      padding: 5px 12px; border-radius: 50px;
+      font-size: .82rem; font-weight: 600;
+    }
+    .btn-logout {
+      background: none; border: 1px solid var(--border);
+      color: var(--text-mid); border-radius: 8px;
+      padding: 6px 12px; font-family: var(--sans);
+      font-size: .82rem; cursor: pointer; transition: all .2s;
+    }
+    .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 40px 32px; }
+
+    /* ── KPI CARDS ── */
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 16px; margin-bottom: 40px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px;
+      transition: border-color .2s;
+    }
+    .kpi-card:hover { border-color: var(--accent); }
+    .kpi-label {
+      font-size: .75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em;
+      color: var(--text-mid); margin-bottom: 10px;
+    }
+    .kpi-value {
+      font-size: 2.2rem; font-weight: 800;
+      line-height: 1; margin-bottom: 4px;
+    }
+    .kpi-sub { font-size: .8rem; color: var(--text-mid); }
+    .kpi-card.green .kpi-value { color: var(--green); }
+    .kpi-card.orange .kpi-value { color: var(--orange); }
+    .kpi-card.blue .kpi-value { color: var(--accent); }
+    .kpi-card.cyan .kpi-value { color: var(--accent2); }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 1.1rem; font-weight: 700; color: var(--text);
+    }
+    .section-sub { font-size: .82rem; color: var(--text-mid); margin-top: 2px; }
+
+    /* ── MONTHS TABLE ── */
+    .months-table {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+      margin-bottom: 40px;
+    }
+    .months-table table {
+      width: 100%; border-collapse: collapse;
+    }
+    .months-table th {
+      background: rgba(255,255,255,.03);
+      font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em;
+      color: var(--text-mid); padding: 14px 20px;
+      text-align: left; border-bottom: 1px solid var(--border);
+    }
+    .months-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      font-size: .9rem;
+    }
+    .months-table tr:last-child td { border-bottom: none; }
+    .months-table tr:hover td { background: rgba(255,255,255,.02); }
+
+    .month-key {
+      font-family: var(--mono); font-size: .85rem;
+      color: var(--accent2); font-weight: 500;
+    }
+    .commission-amount {
+      font-family: var(--mono); font-weight: 700;
+      font-size: .95rem;
+    }
+    .badge-paid {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--green-lt); color: var(--green);
+      padding: 4px 10px; border-radius: 50px;
+      font-size: .78rem; font-weight: 700;
+    }
+    .badge-pending {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--orange-lt); color: var(--orange);
+      padding: 4px 10px; border-radius: 50px;
+      font-size: .78rem; font-weight: 700;
+    }
+
+    /* Bouton admin marquer payé */
+    .btn-mark-paid {
+      background: var(--green-lt); color: var(--green);
+      border: 1px solid #065f46; border-radius: 8px;
+      padding: 6px 12px; font-family: var(--sans);
+      font-size: .78rem; font-weight: 700;
+      cursor: pointer; transition: all .2s; display: none;
+    }
+    .btn-mark-paid:hover { background: #065f46; }
+    .btn-mark-unpaid {
+      background: var(--orange-lt); color: var(--orange);
+      border: 1px solid #92400e; border-radius: 8px;
+      padding: 6px 12px; font-family: var(--sans);
+      font-size: .78rem; font-weight: 700;
+      cursor: pointer; transition: all .2s; display: none;
+    }
+    .btn-mark-unpaid:hover { background: #92400e; color: white; }
+
+    /* ── USERS TABLE ── */
+    .users-table {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+    }
+    .users-table table {
+      width: 100%; border-collapse: collapse;
+    }
+    .users-table th {
+      background: rgba(255,255,255,.03);
+      font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em;
+      color: var(--text-mid); padding: 14px 20px;
+      text-align: left; border-bottom: 1px solid var(--border);
+    }
+    .users-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      font-size: .88rem;
+    }
+    .users-table tr:last-child td { border-bottom: none; }
+    .users-table tr:hover td { background: rgba(255,255,255,.02); }
+
+    .email-cell { font-family: var(--mono); font-size: .82rem; color: var(--text-mid); }
+    .premium-yes { color: var(--green); font-weight: 700; }
+    .premium-no  { color: var(--text-lt); }
+
+    /* ── ADMIN PANEL ── */
+    #admin-panel {
+      display: none;
+      background: rgba(239,68,68,.05);
+      border: 1px solid rgba(239,68,68,.2);
+      border-radius: 16px; padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+    #admin-panel h3 {
+      color: var(--red); font-size: .85rem;
+      font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; margin-bottom: 6px;
+    }
+    #admin-panel p { font-size: .82rem; color: var(--text-mid); }
+
+    /* ── ADMIN LOGIN ── */
+    #admin-login-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px 24px;
+      margin-bottom: 24px;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    #admin-login-section label {
+      font-size: .82rem; color: var(--text-mid); font-weight: 600;
+    }
+    #admin-key-input {
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 8px; padding: 8px 12px;
+      color: var(--text); font-family: var(--mono); font-size: .85rem;
+      outline: none; transition: border-color .2s; flex: 1; min-width: 200px;
+    }
+    #admin-key-input:focus { border-color: var(--accent); }
+    .btn-admin-login {
+      background: var(--accent); color: white;
+      border: none; border-radius: 8px;
+      padding: 9px 16px; font-family: var(--sans);
+      font-size: .85rem; font-weight: 700;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-admin-login:hover { background: #2563eb; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center; padding: 48px;
+      color: var(--text-mid);
+    }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .empty-state p { font-size: .9rem; }
+
+    /* ── LOADING ── */
+    .loading {
+      display: flex; align-items: center; justify-content: center;
+      padding: 64px; color: var(--text-mid); gap: 12px;
+      font-size: .9rem;
+    }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 800px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      main { padding: 24px 16px; }
+      header { padding: 0 16px; }
+    }
+    @media (max-width: 500px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+      .login-card { padding: 32px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🛡️</div>
+    <h1>Dashboard Partenaire</h1>
+    <p>Avant de Répondre — Espace partenaires</p>
+
+    <div class="input-group">
+      <label>Code partenaire</label>
+      <input type="text" id="login-code" placeholder="ex: INFO06" autocomplete="off">
+    </div>
+    <div class="input-group">
+      <label>Mot de passe</label>
+      <input type="password" id="login-password" placeholder="••••••••">
+    </div>
+    <button class="btn-login" onclick="doLogin()">Accéder au dashboard</button>
+    <div class="login-error" id="login-error">Code ou mot de passe incorrect.</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+
+  <header>
+    <div class="header-inner">
+      <div class="header-logo">🛡️ Avant de <span>Répondre</span></div>
+      <div class="header-info">
+        <div class="partner-badge" id="partner-name-badge">—</div>
+        <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      Chargement des données…
+    </div>
+
+    <div id="content" style="display:none;">
+
+      <!-- KPI -->
+      <div class="kpi-grid">
+        <div class="kpi-card blue">
+          <div class="kpi-label">Inscrits</div>
+          <div class="kpi-value" id="kpi-inscrits">—</div>
+          <div class="kpi-sub">via votre code</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">Abonnés Premium</div>
+          <div class="kpi-value" id="kpi-abonnes">—</div>
+          <div class="kpi-sub">actuellement actifs</div>
+        </div>
+        <div class="kpi-card cyan">
+          <div class="kpi-label">Total généré</div>
+          <div class="kpi-value" id="kpi-total">—</div>
+          <div class="kpi-sub">3 € par abonnement</div>
+        </div>
+        <div class="kpi-card orange">
+          <div class="kpi-label">En attente</div>
+          <div class="kpi-value" id="kpi-pending">—</div>
+          <div class="kpi-sub">non encore réglé</div>
+        </div>
+      </div>
+
+      <!-- SECTION ADMIN LOGIN -->
+      <div id="admin-login-section">
+        <label>🔐 Accès admin :</label>
+        <input type="password" id="admin-key-input" placeholder="Clé admin pour marquer les paiements">
+        <button class="btn-admin-login" onclick="activateAdmin()">Activer</button>
+        <span id="admin-status" style="font-size:.8rem;color:var(--text-mid);"></span>
+      </div>
+
+      <!-- ADMIN PANEL -->
+      <div id="admin-panel">
+        <h3>⚠️ Mode admin activé</h3>
+        <p>Vous pouvez marquer les mois comme payés ou annuler un règlement.</p>
+      </div>
+
+      <!-- STATS MENSUELLES -->
+      <div class="section-header">
+        <div>
+          <div class="section-title">Commissions par mois</div>
+          <div class="section-sub">Historique des conversions premium et statut des règlements</div>
+        </div>
+      </div>
+
+      <div class="months-table" id="months-container">
+        <div class="empty-state">
+          <div class="icon">📊</div>
+          <p>Aucune conversion premium pour l'instant.</p>
+        </div>
+      </div>
+
+      <!-- LISTE UTILISATEURS -->
+      <div class="section-header" style="margin-top:40px;">
+        <div>
+          <div class="section-title">Utilisateurs parrainés</div>
+          <div class="section-sub">Tous les comptes créés via votre code</div>
+        </div>
+      </div>
+
+      <div class="users-table" id="users-container">
+        <div class="empty-state">
+          <div class="icon">👥</div>
+          <p>Aucun utilisateur parrainé pour l'instant.</p>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div><!-- /dashboard -->
+
+<script>
+  // ── CONFIG ──
+  const API_BASE = 'https://referrerstats-a7hlplcqrq-uc.a.run.app';
+  const MARK_PAID_BASE = 'https://markmonthpaid-a7hlplcqrq-uc.a.run.app';
+
+  let currentCode = '';
+  let currentPassword = '';
+  let adminKey = '';
+  let isAdmin = false;
+  let dashboardData = null;
+
+  // ── LOGIN ──
+  async function doLogin() {
+    const code = document.getElementById('login-code').value.trim().toUpperCase();
+    const password = document.getElementById('login-password').value.trim();
+    const errEl = document.getElementById('login-error');
+
+    if (!code || !password) { errEl.style.display = 'block'; errEl.textContent = 'Veuillez remplir tous les champs.'; return; }
+
+    errEl.style.display = 'none';
+
+    try {
+      const res = await fetch(`${API_BASE}?code=${encodeURIComponent(code)}`, {
+        headers: { 'Authorization': `Bearer ${password}` }
+      });
+
+      if (res.status === 401 || res.status === 404) {
+        errEl.style.display = 'block';
+        errEl.textContent = 'Code ou mot de passe incorrect.';
+        return;
+      }
+
+      const data = await res.json();
+      currentCode = code;
+      currentPassword = password;
+
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+
+      renderDashboard(data);
+
+    } catch (e) {
+      errEl.style.display = 'block';
+      errEl.textContent = 'Erreur de connexion. Réessayez.';
+    }
+  }
+
+  document.getElementById('login-password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  // ── LOGOUT ──
+  function doLogout() {
+    currentCode = ''; currentPassword = ''; adminKey = ''; isAdmin = false;
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('login-code').value = '';
+    document.getElementById('login-password').value = '';
+    document.getElementById('admin-key-input').value = '';
+    document.getElementById('admin-status').textContent = '';
+  }
+
+  // ── ADMIN ACTIVATION ──
+  function activateAdmin() {
+    const key = document.getElementById('admin-key-input').value.trim();
+    const statusEl = document.getElementById('admin-status');
+
+    if (key === 'ADR-ADMIN-2026') {
+      adminKey = key;
+      isAdmin = true;
+      document.getElementById('admin-panel').style.display = 'block';
+      document.getElementById('admin-login-section').style.background = 'rgba(239,68,68,.05)';
+      document.getElementById('admin-login-section').style.borderColor = 'rgba(239,68,68,.2)';
+      statusEl.textContent = '✅ Mode admin activé';
+      statusEl.style.color = 'var(--green)';
+      // Afficher les boutons de paiement
+      document.querySelectorAll('.btn-mark-paid, .btn-mark-unpaid').forEach(b => b.style.display = 'inline-flex');
+    } else {
+      statusEl.textContent = '❌ Clé incorrecte';
+      statusEl.style.color = 'var(--red)';
+    }
+  }
+
+  // ── RENDER ──
+  function renderDashboard(data) {
+    dashboardData = data;
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    document.getElementById('partner-name-badge').textContent = data.name || data.code;
+
+    // KPI
+    document.getElementById('kpi-inscrits').textContent = data.totalInscrits ?? 0;
+    document.getElementById('kpi-abonnes').textContent = data.totalAbonnes ?? 0;
+    document.getElementById('kpi-total').textContent = `${data.totalDu ?? 0} €`;
+    document.getElementById('kpi-pending').textContent = `${data.totalNonPaye ?? 0} €`;
+
+    // Mois
+    renderMonths(data.months || []);
+
+    // Utilisateurs
+    renderUsers(data.users || []);
+  }
+
+  function renderMonths(months) {
+    const container = document.getElementById('months-container');
+
+    if (!months.length) {
+      container.innerHTML = `<div class="empty-state"><div class="icon">📊</div><p>Aucune conversion premium pour l'instant.</p></div>`;
+      return;
+    }
+
+    const rows = months.map(m => {
+      const monthLabel = formatMonthKey(m.monthKey);
+      const statusBadge = m.paid
+        ? `<span class="badge-paid">✓ Payé</span>`
+        : `<span class="badge-pending">⏳ En attente</span>`;
+
+      const btnPaid = `<button class="btn-mark-paid" onclick="markPaid('${m.monthKey}', true)" style="display:${isAdmin ? 'inline-flex' : 'none'}">✓ Marquer payé</button>`;
+      const btnUnpaid = `<button class="btn-mark-unpaid" onclick="markPaid('${m.monthKey}', false)" style="display:${isAdmin ? 'inline-flex' : 'none'}">↩ Annuler</button>`;
+
+      const actionBtn = m.paid ? btnUnpaid : btnPaid;
+
+      return `<tr data-month="${m.monthKey}">
+        <td><span class="month-key">${monthLabel}</span></td>
+        <td>${m.count} abonnement${m.count > 1 ? 's' : ''}</td>
+        <td><span class="commission-amount">${m.commission} €</span></td>
+        <td class="status-cell">${statusBadge}</td>
+        <td class="action-cell">${actionBtn}</td>
+      </tr>`;
+    }).join('');
+
+    container.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Mois</th>
+            <th>Conversions</th>
+            <th>Commission</th>
+            <th>Statut</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  function renderUsers(users) {
+    const container = document.getElementById('users-container');
+
+    if (!users.length) {
+      container.innerHTML = `<div class="empty-state"><div class="icon">👥</div><p>Aucun utilisateur parrainé pour l'instant.</p></div>`;
+      return;
+    }
+
+    const rows = users.map(u => `
+      <tr>
+        <td class="email-cell">${maskEmail(u.email)}</td>
+        <td>${u.createdAt || '—'}</td>
+        <td class="${u.isPremium ? 'premium-yes' : 'premium-no'}">${u.isPremium ? '✓ Premium' : '— Gratuit'}</td>
+        <td>${u.subscribedAt || '—'}</td>
+      </tr>`).join('');
+
+    container.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Inscription</th>
+            <th>Statut</th>
+            <th>Abonnement le</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  // ── MARK PAID ──
+  async function markPaid(monthKey, paid) {
+    if (!isAdmin) return;
+
+    try {
+      const res = await fetch(MARK_PAID_BASE, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-key': adminKey,
+        },
+        body: JSON.stringify({ code: currentCode, monthKey, paid }),
+      });
+
+      if (!res.ok) { alert('Erreur lors de la mise à jour.'); return; }
+
+      // Rafraîchir les données
+      await refreshData();
+
+    } catch (e) {
+      alert('Erreur de connexion.');
+    }
+  }
+
+  async function refreshData() {
+    try {
+      const res = await fetch(`${API_BASE}?code=${encodeURIComponent(currentCode)}`, {
+        headers: { 'Authorization': `Bearer ${currentPassword}` }
+      });
+      const data = await res.json();
+      renderDashboard(data);
+    } catch (e) {
+      console.error('Refresh error', e);
+    }
+  }
+
+  // ── HELPERS ──
+  function formatMonthKey(mk) {
+    if (!mk || mk === '—') return mk;
+    const [year, month] = mk.split('-');
+    const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+    return `${months[parseInt(month) - 1]} ${year}`;
+  }
+
+  function maskEmail(email) {
+    if (!email) return '—';
+    const [local, domain] = email.split('@');
+    if (!domain) return email;
+    const masked = local.slice(0, 2) + '***';
+    return `${masked}@${domain}`;
+  }
+</script>
+
+</body>
+</html>
