@@ -1062,31 +1062,31 @@
       block.className = 'month-block';
       block.setAttribute('data-month', m.key);
 
-      block.innerHTML = \`
-        <div class="month-header" onclick="toggleMonth('\${blockId}', '\${chevronId}')">
+      block.innerHTML = `
+        <div class="month-header" onclick="toggleMonth('${blockId}', '${chevronId}')">
           <div class="month-header-left">
-            <span class="month-label">📅 \${m.label}</span>
-            <span class="month-badge">\${m.count} abonné\${m.count > 1 ? 's' : ''}</span>
-            \${statusBadge}
+            <span class="month-label">📅 ${m.label}</span>
+            <span class="month-badge">${m.count} abonné${m.count > 1 ? 's' : ''}</span>
+            ${statusBadge}
           </div>
           <div style="display:flex;align-items:center;gap:8px;">
-            \${actionBtn}
-            <span class="month-amount">\${montant} €</span>
-            <span class="month-chevron \${isFirst ? 'open' : ''}" id="\${chevronId}">▼</span>
+            ${actionBtn}
+            <span class="month-amount">${montant} €</span>
+            <span class="month-chevron ${isFirst ? 'open' : ''}" id="${chevronId}">▼</span>
           </div>
         </div>
-        <div class="month-body" id="\${blockId}" style="\${isFirst ? '' : 'display:none'}">
+        <div class="month-body" id="${blockId}" style="${isFirst ? '' : 'display:none'}">
           <table>
             <thead><tr><th>Email</th><th>Date abonnement</th><th>Commission</th></tr></thead>
-            <tbody>\${rows}</tbody>
+            <tbody>${rows}</tbody>
           </table>
         </div>
-      \`;
+      `;
       container.appendChild(block);
     });
 
     document.getElementById('monthly-count').textContent =
-      displayMonths.length === 1 ? '1 mois' : \`\${displayMonths.length} mois\`;
+      displayMonths.length === 1 ? '1 mois' : `${displayMonths.length} mois`;
     document.getElementById('monthly-section').style.display = 'block';
   }
 
@@ -1094,7 +1094,7 @@
     if (!key || key === '—') return key;
     const [year, month] = key.split('-');
     const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-    return \`\${months[parseInt(month) - 1]} \${year}\`;
+    return `${months[parseInt(month) - 1]} ${year}`;
   }
 
   async function markPaid(monthKey, paid) {
@@ -1110,8 +1110,8 @@
       });
       if (!res.ok) { alert('Erreur lors de la mise à jour.'); return; }
       // Rafraîchir les données
-      const dataRes = await fetch(\`\${API_BASE}?code=\${encodeURIComponent(currentCode)}\`, {
-        headers: { 'Authorization': \`Bearer \${currentPassword}\` }
+      const dataRes = await fetch(`${API_BASE}?code=${encodeURIComponent(currentCode)}`, {
+        headers: { 'Authorization': `Bearer ${currentPassword}` }
       });
       const data = await dataRes.json();
       showDashboard(data);
