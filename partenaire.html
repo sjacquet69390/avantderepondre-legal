@@ -618,6 +618,37 @@
 
     .month-chevron.open { transform: rotate(180deg); }
 
+    .badge-paid {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #d1fae5; color: #065f46;
+      padding: 3px 10px; border-radius: 50px;
+      font-size: .75rem; font-weight: 700;
+    }
+    .badge-pending {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #fef3c7; color: #92400e;
+      padding: 3px 10px; border-radius: 50px;
+      font-size: .75rem; font-weight: 700;
+    }
+    .btn-mark-paid {
+      background: #d1fae5; color: #065f46;
+      border: 1px solid #6ee7b7; border-radius: 8px;
+      padding: 5px 12px; font-family: 'DM Sans', sans-serif;
+      font-size: .78rem; font-weight: 700;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-mark-paid:hover { background: #6ee7b7; }
+    .btn-mark-unpaid {
+      background: #fef3c7; color: #92400e;
+      border: 1px solid #fcd34d; border-radius: 8px;
+      padding: 5px 12px; font-family: 'DM Sans', sans-serif;
+      font-size: .78rem; font-weight: 700;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-mark-unpaid:hover { background: #fcd34d; }
+    .stat-card.orange::before { background: linear-gradient(90deg, #c2410c, #f97316); }
+    .stat-card.orange .stat-value { color: #ea580c; }
+
     .month-body {
       border-top: 1px solid var(--border);
       overflow: hidden;
@@ -806,6 +837,12 @@
           <div class="stat-label">Total dû</div>
           <div class="stat-sub">3 € par abonnement</div>
         </div>
+        <div class="stat-card orange">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-value" id="stat-pending">—</div>
+          <div class="stat-label">En attente</div>
+          <div class="stat-sub">Mois non encore réglés</div>
+        </div>
       </div>
 
       <!-- PAYOUT BANNER -->
@@ -854,11 +891,14 @@
 </div>
 
 <script>
-  const API_BASE =   'https://referrerstats-a7hlplcqrq-uc.a.run.app';
-  const ADMIN_BASE = 'https://createreferrer-a7hlplcqrq-uc.a.run.app';
+  const API_BASE =      'https://referrerstats-a7hlplcqrq-uc.a.run.app';
+  const ADMIN_BASE =    'https://createreferrer-a7hlplcqrq-uc.a.run.app';
+  const MARK_PAID_BASE = 'https://markmonthpaid-a7hlplcqrq-uc.a.run.app';
 
   let currentCode = '';
   let currentPassword = '';
+  let isAdminMode = false;
+  let dashboardMonths = [];
 
   // Permettre la connexion avec Entrée
   document.addEventListener('keydown', e => {
@@ -915,8 +955,9 @@
 
     document.getElementById('stat-inscrits').textContent = data.totalInscrits;
     document.getElementById('stat-abonnes').textContent = data.totalAbonnes;
-    document.getElementById('stat-du').textContent = data.totalDu + ' €';
-    document.getElementById('payout-amount').textContent = data.totalDu + ' €';
+    document.getElementById('stat-du').textContent = (data.totalDu ?? 0) + ' €';
+    document.getElementById('stat-pending').textContent = (data.totalNonPaye ?? 0) + ' €';
+    document.getElementById('payout-amount').textContent = (data.totalDu ?? 0) + ' €';
 
     const count = data.totalInscrits;
     document.getElementById('table-count').textContent =
@@ -949,86 +990,132 @@
       });
     }
 
-    renderMonthly(data.users);
+    dashboardMonths = data.months || [];
+    renderMonthly(data.users, data.months || []);
   }
 
-  function renderMonthly(users) {
-    // Filtrer uniquement les abonnés Premium avec une date d'abonnement
-    const premiumUsers = users.filter(u => u.isPremium && u.subscribedAt && u.subscribedAt !== '—');
+  function renderMonthly(users, months) {
+    const container = document.getElementById('monthly-container');
+    container.innerHTML = '';
 
-    if (premiumUsers.length === 0) {
+    // Priorité aux données months de l'API (avec statut payé)
+    // Fallback sur calcul depuis users si months vide (anciens comptes sans premiumEvents)
+    let displayMonths = [];
+
+    if (months && months.length > 0) {
+      // Utiliser les données de la sous-collection premiumEvents
+      displayMonths = months.map(m => ({
+        key: m.monthKey,
+        label: formatMonthLabel(m.monthKey),
+        count: m.count,
+        commission: m.commission,
+        paid: m.paid,
+        events: m.events || [],
+      }));
+    } else {
+      // Fallback : calculer depuis les users (anciens abonnements sans premiumEvents)
+      const premiumUsers = users.filter(u => u.isPremium && u.subscribedAt && u.subscribedAt !== '—');
+      if (premiumUsers.length === 0) {
+        document.getElementById('monthly-section').style.display = 'none';
+        return;
+      }
+      const byMonth = {};
+      premiumUsers.forEach(u => {
+        const parts = u.subscribedAt.split('/');
+        if (parts.length === 3) {
+          const key = `${parts[2]}-${parts[1]}`;
+          if (!byMonth[key]) byMonth[key] = { key, label: formatMonthLabel(key), count: 0, commission: 0, paid: false, events: [] };
+          byMonth[key].count++;
+          byMonth[key].commission += 3;
+          byMonth[key].events.push({ email: u.email, date: u.subscribedAt });
+        }
+      });
+      displayMonths = Object.values(byMonth).sort((a, b) => b.key.localeCompare(a.key));
+    }
+
+    if (displayMonths.length === 0) {
       document.getElementById('monthly-section').style.display = 'none';
       return;
     }
 
-    // Grouper par mois (format "MM/YYYY" → clé "YYYY-MM" pour tri)
-    const byMonth = {};
-    premiumUsers.forEach(u => {
-      // subscribedAt est au format "DD/MM/YYYY"
-      const parts = u.subscribedAt.split('/');
-      if (parts.length === 3) {
-        const key = `${parts[2]}-${parts[1]}`; // YYYY-MM pour tri
-        const label = new Date(`${parts[2]}-${parts[1]}-01`).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
-        if (!byMonth[key]) byMonth[key] = { label, users: [] };
-        byMonth[key].users.push(u);
-      }
-    });
-
-    // Trier les mois du plus récent au plus ancien
-    const sortedKeys = Object.keys(byMonth).sort((a, b) => b.localeCompare(a));
-
-    const container = document.getElementById('monthly-container');
-    container.innerHTML = '';
-
-    sortedKeys.forEach((key, idx) => {
-      const { label, users } = byMonth[key];
-      const montant = (users.length * 3).toFixed(2).replace('.', ',');
+    displayMonths.forEach((m, idx) => {
       const blockId = `month-body-${idx}`;
       const chevronId = `chevron-${idx}`;
+      const isFirst = idx === 0;
+      const montant = m.commission.toFixed(2).replace('.', ',');
+
+      const statusBadge = m.paid
+        ? `<span class="badge-paid">✓ Payé</span>`
+        : `<span class="badge-pending">⏳ En attente</span>`;
+
+      const actionBtn = isAdminMode
+        ? (m.paid
+          ? `<button class="btn-mark-unpaid" onclick="markPaid('${m.key}', false)">↩ Annuler</button>`
+          : `<button class="btn-mark-paid" onclick="markPaid('${m.key}', true)">✓ Marquer payé</button>`)
+        : '';
+
+      const rows = m.events.length > 0
+        ? m.events.map(e => `<tr><td>${e.email || '—'}</td><td>${e.date || '—'}</td><td style="color:var(--gold-light);font-weight:600;">3,00 €</td></tr>`).join('')
+        : `<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:16px;">Détail non disponible (abonnement antérieur)</td></tr>`;
 
       const block = document.createElement('div');
       block.className = 'month-block';
+      block.setAttribute('data-month', m.key);
 
-      const isFirst = idx === 0;
-
-      block.innerHTML = `
-        <div class="month-header" onclick="toggleMonth('${blockId}', '${chevronId}')">
+      block.innerHTML = \`
+        <div class="month-header" onclick="toggleMonth('\${blockId}', '\${chevronId}')">
           <div class="month-header-left">
-            <span class="month-label">📅 ${label}</span>
-            <span class="month-badge">${users.length} abonné${users.length > 1 ? 's' : ''}</span>
+            <span class="month-label">📅 \${m.label}</span>
+            <span class="month-badge">\${m.count} abonné\${m.count > 1 ? 's' : ''}</span>
+            \${statusBadge}
           </div>
           <div style="display:flex;align-items:center;gap:8px;">
-            <span class="month-amount">${montant} €</span>
-            <span class="month-chevron ${isFirst ? 'open' : ''}" id="${chevronId}">▼</span>
+            \${actionBtn}
+            <span class="month-amount">\${montant} €</span>
+            <span class="month-chevron \${isFirst ? 'open' : ''}" id="\${chevronId}">▼</span>
           </div>
         </div>
-        <div class="month-body" id="${blockId}" style="${isFirst ? '' : 'display:none'}">
+        <div class="month-body" id="\${blockId}" style="\${isFirst ? '' : 'display:none'}">
           <table>
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Date abonnement</th>
-                <th>Commission</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${users.map(u => `
-                <tr>
-                  <td>${u.email}</td>
-                  <td>${u.subscribedAt}</td>
-                  <td style="color:var(--gold-light);font-weight:600;">3,00 €</td>
-                </tr>
-              `).join('')}
-            </tbody>
+            <thead><tr><th>Email</th><th>Date abonnement</th><th>Commission</th></tr></thead>
+            <tbody>\${rows}</tbody>
           </table>
         </div>
-      `;
+      \`;
       container.appendChild(block);
     });
 
     document.getElementById('monthly-count').textContent =
-      sortedKeys.length === 1 ? '1 mois' : `${sortedKeys.length} mois`;
+      displayMonths.length === 1 ? '1 mois' : \`\${displayMonths.length} mois\`;
     document.getElementById('monthly-section').style.display = 'block';
+  }
+
+  function formatMonthLabel(key) {
+    if (!key || key === '—') return key;
+    const [year, month] = key.split('-');
+    const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+    return \`\${months[parseInt(month) - 1]} \${year}\`;
+  }
+
+  async function markPaid(monthKey, paid) {
+    if (!isAdminMode) return;
+    const adminKey = document.getElementById('admin-key').value.trim();
+    if (!adminKey) { alert('Veuillez renseigner la clé admin dans le formulaire de création de partenaire.'); return; }
+
+    try {
+      const res = await fetch(MARK_PAID_BASE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
+        body: JSON.stringify({ code: currentCode, monthKey, paid }),
+      });
+      if (!res.ok) { alert('Erreur lors de la mise à jour.'); return; }
+      // Rafraîchir les données
+      const dataRes = await fetch(\`\${API_BASE}?code=\${encodeURIComponent(currentCode)}\`, {
+        headers: { 'Authorization': \`Bearer \${currentPassword}\` }
+      });
+      const data = await dataRes.json();
+      showDashboard(data);
+    } catch (e) { alert('Erreur de connexion.'); }
   }
 
   function toggleMonth(bodyId, chevronId) {
@@ -1047,6 +1134,8 @@
     document.getElementById('loading').style.display = 'block';
     currentCode = '';
     currentPassword = '';
+    isAdminMode = false;
+    dashboardMonths = [];
   }
 
   const ADMIN_PIN = 'JACKADR';  // ← changez ce PIN
@@ -1065,6 +1154,13 @@
       document.getElementById('admin-screen').style.display = 'flex';
       document.getElementById('admin-pin').value = '';
       errorEl.style.display = 'none';
+      isAdminMode = true;
+      // Rafraîchir le dashboard si connecté pour afficher les boutons de paiement
+      if (currentCode && currentPassword) {
+        fetch(`${API_BASE}?code=${encodeURIComponent(currentCode)}`, {
+          headers: { 'Authorization': `Bearer ${currentPassword}` }
+        }).then(r => r.json()).then(data => showDashboard(data)).catch(() => {});
+      }
     } else {
       errorEl.style.display = 'block';
     }
