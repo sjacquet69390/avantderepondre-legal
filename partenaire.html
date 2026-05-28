@@ -227,6 +227,21 @@
       color: var(--gold-light);
     }
 
+    .btn-admin-toggle {
+      background: rgba(59,130,246,.15);
+      border: 1px solid rgba(59,130,246,.3);
+      color: #3b82f6;
+      border-radius: 8px; padding: 7px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .82rem; font-weight: 600;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-admin-toggle:hover { background: rgba(59,130,246,.25); }
+    .btn-admin-toggle.active {
+      background: rgba(16,185,129,.15);
+      border-color: rgba(16,185,129,.3);
+      color: #10b981;
+    }
     .btn-logout {
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.1);
@@ -801,7 +816,25 @@
     </div>
     <div class="topbar-right">
       <div class="partner-badge" id="partner-name">Partenaire</div>
+      <button class="btn-admin-toggle" id="btn-admin-toggle" onclick="showAdminModal()">🔐 Mode admin</button>
       <button class="btn-logout" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+
+  <!-- MODALE PIN ADMIN -->
+  <div id="admin-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:#1e293b; border:1px solid #334155; border-radius:16px; padding:32px; max-width:360px; width:90%; text-align:center;">
+      <div style="font-size:2rem; margin-bottom:12px;">🔐</div>
+      <h3 style="color:white; font-size:1.1rem; margin-bottom:8px;">Mode administration</h3>
+      <p style="color:#94a3b8; font-size:.85rem; margin-bottom:20px;">Saisissez le PIN pour activer la gestion des paiements.</p>
+      <input type="password" id="modal-admin-pin" placeholder="PIN admin"
+        style="width:100%; background:#0f172a; border:1.5px solid #334155; border-radius:10px; padding:11px 14px; color:white; font-size:.95rem; text-align:center; outline:none; margin-bottom:12px;"
+        onkeydown="if(event.key==='Enter') validateAdminModal()">
+      <div id="modal-admin-error" style="color:#ef4444; font-size:.8rem; margin-bottom:12px; display:none;">PIN incorrect.</div>
+      <div style="display:flex; gap:10px;">
+        <button onclick="hideAdminModal()" style="flex:1; background:#334155; color:#94a3b8; border:none; border-radius:10px; padding:11px; font-family:inherit; font-size:.9rem; cursor:pointer;">Annuler</button>
+        <button onclick="validateAdminModal()" style="flex:1; background:#3b82f6; color:white; border:none; border-radius:10px; padding:11px; font-family:inherit; font-size:.9rem; font-weight:700; cursor:pointer;">Valider</button>
+      </div>
     </div>
   </div>
 
@@ -843,15 +876,6 @@
           <div class="stat-label">En attente</div>
           <div class="stat-sub">Mois non encore réglés</div>
         </div>
-      </div>
-
-      <!-- PAYOUT BANNER -->
-      <div class="payout-banner" id="payout-banner">
-        <div class="left">
-          <h3>Montant à vous reverser</h3>
-          <p>3 € par client ayant souscrit un abonnement Premium</p>
-        </div>
-        <div class="payout-amount" id="payout-amount">0 €</div>
       </div>
 
       <!-- TABLE -->
@@ -956,8 +980,13 @@
     document.getElementById('stat-inscrits').textContent = data.totalInscrits;
     document.getElementById('stat-abonnes').textContent = data.totalAbonnes;
     document.getElementById('stat-du').textContent = (data.totalDu ?? 0) + ' €';
-    document.getElementById('stat-pending').textContent = (data.totalNonPaye ?? 0) + ' €';
-    document.getElementById('payout-amount').textContent = (data.totalDu ?? 0) + ' €';
+
+    // En attente : utilise totalNonPaye si dispo (nouveaux abonnements avec premiumEvents)
+    // sinon fallback = totalDu (tous les abonnements = en attente car pas encore tracés)
+    const pending = (data.months && data.months.length > 0)
+      ? (data.totalNonPaye ?? 0)
+      : (data.totalDu ?? 0);
+    document.getElementById('stat-pending').textContent = pending + ' €';
 
     const count = data.totalInscrits;
     document.getElementById('table-count').textContent =
@@ -1062,31 +1091,31 @@
       block.className = 'month-block';
       block.setAttribute('data-month', m.key);
 
-      block.innerHTML = \`
-        <div class="month-header" onclick="toggleMonth('\${blockId}', '\${chevronId}')">
+      block.innerHTML = `
+        <div class="month-header" onclick="toggleMonth('${blockId}', '${chevronId}')">
           <div class="month-header-left">
-            <span class="month-label">📅 \${m.label}</span>
-            <span class="month-badge">\${m.count} abonné\${m.count > 1 ? 's' : ''}</span>
-            \${statusBadge}
+            <span class="month-label">📅 ${m.label}</span>
+            <span class="month-badge">${m.count} abonné${m.count > 1 ? 's' : ''}</span>
+            ${statusBadge}
           </div>
           <div style="display:flex;align-items:center;gap:8px;">
-            \${actionBtn}
-            <span class="month-amount">\${montant} €</span>
-            <span class="month-chevron \${isFirst ? 'open' : ''}" id="\${chevronId}">▼</span>
+            ${actionBtn}
+            <span class="month-amount">${montant} €</span>
+            <span class="month-chevron ${isFirst ? 'open' : ''}" id="${chevronId}">▼</span>
           </div>
         </div>
-        <div class="month-body" id="\${blockId}" style="\${isFirst ? '' : 'display:none'}">
+        <div class="month-body" id="${blockId}" style="${isFirst ? '' : 'display:none'}">
           <table>
             <thead><tr><th>Email</th><th>Date abonnement</th><th>Commission</th></tr></thead>
-            <tbody>\${rows}</tbody>
+            <tbody>${rows}</tbody>
           </table>
         </div>
-      \`;
+      `;
       container.appendChild(block);
     });
 
     document.getElementById('monthly-count').textContent =
-      displayMonths.length === 1 ? '1 mois' : \`\${displayMonths.length} mois\`;
+      displayMonths.length === 1 ? '1 mois' : `${displayMonths.length} mois`;
     document.getElementById('monthly-section').style.display = 'block';
   }
 
@@ -1094,13 +1123,60 @@
     if (!key || key === '—') return key;
     const [year, month] = key.split('-');
     const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-    return \`\${months[parseInt(month) - 1]} \${year}\`;
+    return `${months[parseInt(month) - 1]} ${year}`;
+  }
+
+  let storedAdminKey = '';
+
+  function showAdminModal() {
+    if (isAdminMode) {
+      // Désactiver le mode admin
+      isAdminMode = false;
+      storedAdminKey = '';
+      document.getElementById('btn-admin-toggle').classList.remove('active');
+      document.getElementById('btn-admin-toggle').textContent = '🔐 Mode admin';
+      // Rafraîchir pour masquer les boutons
+      if (currentCode && currentPassword) {
+        fetch(`${API_BASE}?code=${encodeURIComponent(currentCode)}`, {
+          headers: { 'Authorization': `Bearer ${currentPassword}` }
+        }).then(r => r.json()).then(data => showDashboard(data)).catch(() => {});
+      }
+      return;
+    }
+    document.getElementById('modal-admin-pin').value = '';
+    document.getElementById('modal-admin-error').style.display = 'none';
+    document.getElementById('admin-modal').style.display = 'flex';
+    setTimeout(() => document.getElementById('modal-admin-pin').focus(), 100);
+  }
+
+  function hideAdminModal() {
+    document.getElementById('admin-modal').style.display = 'none';
+  }
+
+  function validateAdminModal() {
+    const pin = document.getElementById('modal-admin-pin').value.trim();
+    const errEl = document.getElementById('modal-admin-error');
+    if (pin === ADMIN_PIN) {
+      isAdminMode = true;
+      storedAdminKey = 'ADR-ADMIN-2026';
+      hideAdminModal();
+      document.getElementById('btn-admin-toggle').classList.add('active');
+      document.getElementById('btn-admin-toggle').textContent = '✅ Admin actif';
+      // Rafraîchir pour afficher les boutons
+      if (currentCode && currentPassword) {
+        fetch(`${API_BASE}?code=${encodeURIComponent(currentCode)}`, {
+          headers: { 'Authorization': `Bearer ${currentPassword}` }
+        }).then(r => r.json()).then(data => showDashboard(data)).catch(() => {});
+      }
+    } else {
+      errEl.style.display = 'block';
+    }
   }
 
   async function markPaid(monthKey, paid) {
     if (!isAdminMode) return;
-    const adminKey = document.getElementById('admin-key').value.trim();
-    if (!adminKey) { alert('Veuillez renseigner la clé admin dans le formulaire de création de partenaire.'); return; }
+    const adminKey = storedAdminKey;
+    if (!adminKey) return;
 
     try {
       const res = await fetch(MARK_PAID_BASE, {
@@ -1110,8 +1186,8 @@
       });
       if (!res.ok) { alert('Erreur lors de la mise à jour.'); return; }
       // Rafraîchir les données
-      const dataRes = await fetch(\`\${API_BASE}?code=\${encodeURIComponent(currentCode)}\`, {
-        headers: { 'Authorization': \`Bearer \${currentPassword}\` }
+      const dataRes = await fetch(`${API_BASE}?code=${encodeURIComponent(currentCode)}`, {
+        headers: { 'Authorization': `Bearer ${currentPassword}` }
       });
       const data = await dataRes.json();
       showDashboard(data);
@@ -1135,7 +1211,10 @@
     currentCode = '';
     currentPassword = '';
     isAdminMode = false;
+    storedAdminKey = '';
     dashboardMonths = [];
+    document.getElementById('btn-admin-toggle').classList.remove('active');
+    document.getElementById('btn-admin-toggle').textContent = '🔐 Mode admin';
   }
 
   const ADMIN_PIN = 'JACKADR';  // ← changez ce PIN
